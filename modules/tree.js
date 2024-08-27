@@ -133,7 +133,7 @@ class Tree {
    }
 
    height(node) {
-      if (!node || (!node.left && !node.right)) return 0;
+      if (!node) return 0;
       const leftHeight = this.height(node.left);
       const rightHeight = this.height(node.right);
   
