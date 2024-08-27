@@ -12,12 +12,13 @@ class Tree {
    }
 
    #formatArr(arr) {
-      arr.sort();
-      return arr.filter((item, index) => arr.indexOf(item) === index);
+      const sortedArr = arr.slice().sort((a, b) => a - b);
+      return Array.from(new Set(sortedArr))
    }
 
    #buildTree(array) {
-      if (!array.length) return;
+      if (!array.length) return null;
+
       const mid = Math.floor((array.length - 1) / 2);
       const node = new Node(array[mid]);
 
@@ -81,80 +82,93 @@ class Tree {
       const queue = [this.root];
       let output = '';
 
-      const dequeue = () => {
+      function dequeue() {
          const node = queue.shift();
          output += node.value + ' -> ';
-         if(callback) {
-            if(myNode.value === node.value)
-               return depth
-         }
          enqueue(node);
       };
 
-      const enqueue = node => {
+      function enqueue(node) {
          if (node.left) queue.push(node.left);
          if (node.right) queue.push(node.right);
-      };
+      }
 
-      while (queue.length > 0) dequeue() 
+      while (queue.length > 0) dequeue();
 
-      return output.slice(0, -4);
+      return output;
    }
 
    inOrder() {
-      let output = '';
+      let output = [];
 
       function rec(node) {
          if (node.left) rec(node.left);
-         output += node.value + ' -> ';
+         output.push(node.value)
          if (node.right) rec(node.right);
       }
       rec(this.root);
-      return output.slice(0, -4);
+      return output;
    }
 
    preOrder() {
-      let output = '';
+      let output = [];
       function rec(node) {
-         output += node.value + ' -> ';
+         output.push(node.value)
          if (node.left) rec(node.left);
          if (node.right) rec(node.right);
       }
       rec(this.root);
-      return output.slice(0, -4);
+      return output;
    }
 
    postOrder() {
-      let output = '';
+      let output = [];
       function rec(node) {
          if (node.left) rec(node.left);
          if (node.right) rec(node.right);
-         output += node.value + ' -> ';
+         output.push(node.value)
       }
       rec(this.root);
-      return output.slice(0, -4);
+      return output;
    }
 
    height(node) {
-      if (!node) return 0;
-      return 1 + max(this.height(node.left), this.height(node.right));
-   }
+      if (!node || (!node.left && !node.right)) return 0;
+      const leftHeight = this.height(node.left);
+      const rightHeight = this.height(node.right);
+  
+      return Math.max(leftHeight, rightHeight) + 1;
+  }
+  
    // CHATGPT ):
    depth(node) {
       function depth(currNode, targetNode, currDepth) {
-         if(!currNode) return -1
-         if(currNode.value === targetNode.value) return currDepth
-         const leftDepth = depth(currNode.left, targetNode, currDepth + 1)
-         if(leftDepth !== -1) return leftDepth
-         return depth(currNode.right, targetNode, currDepth + 1)
+         if (!currNode) return -1;
+         if (currNode.value === targetNode.value) return currDepth;
+         const leftDepth = depth(currNode.left, targetNode, currDepth + 1);
+         if (leftDepth !== -1) return leftDepth;
+         return depth(currNode.right, targetNode, currDepth + 1);
       }
-      return depth(this.root, node, 0)
+      return depth(this.root, node, 0);
+   }
+
+   isBalanced(node = this.root) {
+         if (!node) return true;
+     
+         const leftHeight = node.left ? this.height(node.left) : 0;
+         const rightHeight = node.right ? this.height(node.right) : 0;
+     
+         if (Math.abs(leftHeight - rightHeight) > 1) return false;
+
+         return this.isBalanced(node.left) && this.isBalanced(node.right);
+   }
+     
+   rebalance() {
+      if(this.isBalanced()) return;
+      const arr = this.inOrder()
+      this.root = this.#buildTree(arr)
    }
 }
 
-function max(num1, num2) {
-   if (num1 > num2) return num1;
-   return num2;
-}
 
 module.exports = Tree;

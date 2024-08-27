@@ -1,43 +1,34 @@
-// import LinkedList from "./modules/linkedList";
-// const HashMap = require('./modules/hashMap');
-const Tree = require('./modules/tree')
+const Tree = require('./modules/tree');
 
-// const list = new LinkedList();
-// list.append("dog");
-// list.append("cat");
-// list.prepend('turtle')
-// list.insertAt('snake', 1)
-// list.toString();
-// console.log("");
+function prettyPrintBST(node, prefix = '', isLeft = true) {
+   if (!node) {
+      return;
+   }
 
-// const test = new HashMap();
+   if (node.right) {
+      prettyPrintBST(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+   }
 
-// test.set('apple', 'red');
-// test.set('banana', 'yellow');
+   console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.value}`);
 
-// console.log('Keys:', test.keys());
-// console.log('Values:', test.values());
-
-// console.log(test)
-
-
-function prettyPrintBST(node, prefix = "", isLeft = true) {
-  if (!node) {
-    return;
-  }
-
-  if (node.right) {
-    prettyPrintBST(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
-  }
-
-  console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
-
-  if (node.left) {
-    prettyPrintBST(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-  }
+   if (node.left) {
+      prettyPrintBST(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+   }
 }
 
- 
-const arr = [0, 1, 2, 3, 4, 5, 6, 6, 7, 8, 6]
-const myTree  = new Tree(arr)
-prettyPrintBST(myTree.root)
+function randomNumsArr(size, min = 1, max = 100) {
+   const arr = [];
+   while (size > 0) {
+      arr.push(Math.floor(Math.random() * (max - min + 1)) + min);
+      size -= 1;
+   }
+
+   return arr;
+}
+
+const arr = randomNumsArr(50)
+const myTree = new Tree(arr);
+
+prettyPrintBST(myTree.root);
+
+
